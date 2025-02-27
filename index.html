@@ -2,36 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Include the CesiumJS JavaScript and CSS files -->
   <script src="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Cesium.js"></script>
   <link href="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    html, body, #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
   <div id="cesiumContainer"></div>
   <script type="module">
-    // Your access token can be found at: https://ion.cesium.com/tokens.
-    // This is the default access token from your ion account
-
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhZDNiZDFmNi0zYTJhLTQ5OTUtYTU4Ny1kNDhlYWVlYzczNDciLCJpZCI6Mjc0Njk0LCJpYXQiOjE3MzkxNTY5NDh9.tCYwq5cqahfzOJGDMOdGjk2wIUzEfqP4MGgiC1FvieU';
 
-    // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
     const viewer = new Cesium.Viewer('cesiumContainer', {
       terrain: Cesium.Terrain.fromWorldTerrain(),
-    });    
-
-    // Fly the camera to San Francisco at the given longitude, latitude, and height.
-    viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(-122.4175, 37.655, 400),
-      orientation: {
-        heading: Cesium.Math.toRadians(0.0),
-        pitch: Cesium.Math.toRadians(-15.0),
-      }
+      shouldAnimate: true,
     });
 
-    // Add Cesium OSM Buildings, a global 3D buildings layer.
+    // **開啟真實的太陽光照效果**
+    viewer.scene.globe.enableLighting = true;
+
+    // **開啟陰影**
+    viewer.shadows = true;
+    viewer.scene.shadowMap.enabled = true;
+
+    // **加入 NASA 夜間地圖，讓夜晚更明顯**
+    viewer.imageryLayers.addImageryProvider(
+      new Cesium.IonImageryProvider({ assetId: 3812 }) // 3812 是 NASA 的夜間地圖
+    );
+
+    // **讓相機移動到特定位置**
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(0, 0, 20000000),
+      orientation: {
+        heading: Cesium.Math.toRadians(0),
+        pitch: Cesium.Math.toRadians(-90),
+        roll: 0,
+      },
+    });
+
+    // **加入建築物圖層**
     const buildingTileset = await Cesium.createOsmBuildingsAsync();
-    viewer.scene.primitives.add(buildingTileset);   
+    viewer.scene.primitives.add(buildingTileset);
   </script>
- </div>
 </body>
 </html>
