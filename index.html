@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Earth </title>
-  <!-- Include the CesiumJS JavaScript and CSS files -->
+  <title>Earth</title>
   <script src="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Cesium.js"></script>
   <link href="https://cesium.com/downloads/cesiumjs/releases/1.126/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
   <style>
@@ -19,30 +18,36 @@
 <body>
   <div id="cesiumContainer"></div>
   <script type="module">
-    // 設定 Cesium Ion Access Token
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhZDNiZDFmNi0zYTJhLTQ5OTUtYTU4Ny1kNDhlYWVlYzczNDciLCJpZCI6Mjc0Njk0LCJpYXQiOjE3MzkxNTY5NDh9.tCYwq5cqahfzOJGDMOdGjk2wIUzEfqP4MGgiC1FvieU';
 
     // 初始化 Cesium Viewer
     const viewer = new Cesium.Viewer('cesiumContainer', {
       terrain: Cesium.Terrain.fromWorldTerrain(),
-      shouldAnimate: true,  // 啟用動畫
+      shouldAnimate: true,
     });
 
-    // 飛到國防理工學院
+    // 飛到適當視角
     viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(121.2686, 24.8770, 500), // 調整高度為 500 公尺
+      destination: Cesium.Cartesian3.fromDegrees(121.2686, 24.8070, 20000), // 20,000m 高
       orientation: {
         heading: Cesium.Math.toRadians(0.0),  // 朝北
-        pitch: Cesium.Math.toRadians(-20.0),  // 俯視角度
+        pitch: Cesium.Math.toRadians(-60.0),  // 俯視
         roll: 0.0,
       }
     });
 
-    // 載入 Cesium OSM Buildings（3D 建築）
-    (async () => {
-      const buildingTileset = await Cesium.createOsmBuildingsAsync();
-      viewer.scene.primitives.add(buildingTileset);
-    })();
+    // 創建超級高的紅色直線
+    viewer.entities.add({
+      polyline: {
+        positions: Cesium.Cartesian3.fromDegreesArrayHeights([
+          121.26856, 24.87722, 0,      // 地面
+          121.26856, 24.87722, 1000000   // 高空 100,000m
+        ]),
+        width: 5,
+        material: Cesium.Color.RED,
+      }
+    });
+
   </script>
 </body>
 </html>
