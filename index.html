@@ -26,6 +26,13 @@
       shouldAnimate: true,
     });
 
+    // 啟用真實光照（讓地球上的白天和黑夜與現實同步）
+    viewer.scene.globe.enableLighting = true;
+
+    // 設定時間同步為當前 UTC 時間
+    viewer.clock.currentTime = Cesium.JulianDate.now();
+    viewer.clock.shouldAnimate = true; // 讓地球自轉（時間持續流動）
+
     // 飛到適當視角
     viewer.camera.flyTo({
       destination: Cesium.Cartesian3.fromDegrees(121.2686, 24.8070, 20000), // 20,000m 高
@@ -41,7 +48,7 @@
       polyline: {
         positions: Cesium.Cartesian3.fromDegreesArrayHeights([
           121.26856, 24.87722, 0,      // 地面
-          121.26856, 24.87722, 1000000   // 高空 100,000m
+          121.26856, 24.87722, 1000000   // 高空 1,000,000m
         ]),
         width: 5,
         material: Cesium.Color.RED,
