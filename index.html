@@ -20,9 +20,10 @@
   <script type="module">
     Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhZDNiZDFmNi0zYTJhLTQ5OTUtYTU4Ny1kNDhlYWVlYzczNDciLCJpZCI6Mjc0Njk0LCJpYXQiOjE3MzkxNTY5NDh9.tCYwq5cqahfzOJGDMOdGjk2wIUzEfqP4MGgiC1FvieU';
 
-    // 初始化 Cesium Viewer
-    const viewer = new Cesium.Viewer('cesiumContainer', {
-      terrain: Cesium.Terrain.fromWorldTerrain(),
+    const viewer = new Cesium.Viewer("cesiumContainer", {
+      infoBox: false,
+      selectionIndicator: false,
+      shadows: true,
       shouldAnimate: true,
     });
 
@@ -47,13 +48,44 @@
     viewer.entities.add({
       polyline: {
         positions: Cesium.Cartesian3.fromDegreesArrayHeights([
-          121.26856, 24.87722, 0,      // 地面
+          121.26856, 24.87722, 1000,      // 地面
           121.26856, 24.87722, 1000000   // 高空 1,000,000m
         ]),
         width: 5,
         material: Cesium.Color.RED,
       }
     });
+    /////////////////////////////////////////////////////////////////
+    
+    function createModel(url, height) {
+    //viewer.entities.removeAll();
+
+    const position = Cesium.Cartesian3.fromDegrees(
+      121.26856,
+      24.87722,
+      height,
+    );
+    const heading = Cesium.Math.toRadians(135);
+    const pitch = 0;
+    const roll = 0;
+    const hpr = new Cesium.HeadingPitchRoll(heading, pitch, roll);
+    const orientation = Cesium.Transforms.headingPitchRollQuaternion(position, hpr);
+
+    const entity = viewer.entities.add({
+      name: url,
+      position: position,
+      orientation: orientation,
+      model: {
+        uri: url,
+        minimumPixelSize: 128,
+        maximumScale: 20000,
+      },
+    });
+    viewer.trackedEntity = entity;
+    }
+
+    createModel("Cesium_Air.glb",1000)
+    createModel("Cesium_Man.glb",0)
 
   </script>
 </body>
